@@ -1,0 +1,55 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.21'
+}
+
+group 'me.sizableshrimp.adventofcode2023'
+version '0.1.0'
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    util
+    mainKotlin
+    data
+}
+
+configurations {
+    implementation.extendsFrom utilImplementation
+    animationProcessor.extendsFrom utilAnnotationProcessor
+    runtimeOnly.extendsFrom utilRuntimeOnly
+    compileOnly.extendsFrom utilCompileOnly
+
+    mainKotlinImplementation.extendsFrom utilImplementation
+    mainKotlinAnimationProcessor.extendsFrom utilAnnotationProcessor
+    mainKotlinRuntimeOnly.extendsFrom utilRuntimeOnly
+    mainKotlinCompileOnly.extendsFrom utilCompileOnly
+}
+
+dependencies {
+    mainKotlinImplementation sourceSets.util.output
+    mainKotlinImplementation sourceSets.data.output
+    implementation sourceSets.util.output
+    implementation sourceSets.data.output
+
+    utilImplementation(libs.streamex)
+    utilImplementation(libs.guava)
+    utilImplementation(libs.gson)
+    utilImplementation(libs.fastutil)
+
+    testImplementation(libs.jmh.core)
+    testAnnotationProcessor(libs.jmh.annprocessor)
+}
+
+tasks.register('jmh', JavaExec) {
+    dependsOn 'testClasses'
+    mainClass = 'org.openjdk.jmh.Main'
+    classpath = sourceSets.test.compileClasspath + sourceSets.test.runtimeClasspath
+    def toolchain = project.extensions.getByType(JavaPluginExtension.class).toolchain
+    def service = project.extensions.getByType(JavaToolchainService.class)
+    javaLauncher = service.launcherFor(toolchain)
+}
