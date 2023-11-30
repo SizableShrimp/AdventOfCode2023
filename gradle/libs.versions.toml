@@ -12,3 +12,4 @@ gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 fastutil = { module = "it.unimi.dsi:fastutil", version.ref = "fastutil" }
 jmh-core = { module = "org.openjdk.jmh:jmh-core", version.ref = "jmh" }
 jmh-annprocessor = { module = "org.openjdk.jmh:jmh-generator-annprocess", version.ref = "jmh" }
+kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
