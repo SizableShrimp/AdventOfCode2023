@@ -19,7 +19,6 @@ repositories {
 sourceSets {
     util
     mainKotlin
-    data
 }
 
 configurations {
@@ -36,9 +35,7 @@ configurations {
 
 dependencies {
     mainKotlinImplementation sourceSets.util.output
-    mainKotlinImplementation sourceSets.data.output
     implementation sourceSets.util.output
-    implementation sourceSets.data.output
 
     utilImplementation(libs.streamex)
     utilImplementation(libs.guava)
