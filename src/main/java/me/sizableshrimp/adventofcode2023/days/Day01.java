@@ -87,12 +87,12 @@ public class Day01 extends SeparatedDay {
                 return c - '0';
 
             if (part2 && (!reverse || i <= line.length() - 3)) {
-                List<String> digits = DIGITS_CACHE.get(c - 'a');
-                if (digits == null)
-                    continue;
-                for (String digit : digits) {
-                    if (line.startsWith(digit, i))
-                        return DIGITS.indexOf(digit) + 1;
+                StringBuilder currentSubstring = new StringBuilder();
+                for (int j = i; j < line.length(); j++) {
+                    currentSubstring.append(line.charAt(j));
+                    if (line.startsWith(currentSubstring.toString(), i)) {
+                        return DIGITS.indexOf(currentSubstring.toString()) + 1;
+                    }
                 }
             }
         }
