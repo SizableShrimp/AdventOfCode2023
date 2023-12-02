@@ -53,7 +53,7 @@ public abstract class Day {
 
     protected Day() {
         try {
-            this.lines = DataManager.read(Integer.parseInt(getClass().getSimpleName().substring(3)));
+            this.lines = DataManager.read(Integer.parseInt(getClass().getSimpleName().substring(3, 5)));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -148,7 +148,7 @@ public abstract class Day {
          */
         @Override
         public long timeTaken() {
-            return timeTaken;
+            return this.timeTaken;
         }
     }
 }
