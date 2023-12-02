@@ -31,7 +31,7 @@ class Day01 : Day() {
         var sum2 = 0
 
         for (line in this.lines) {
-            sum1 += (line.first(Char::isDigit) - '0') * 10 + line.last(Char::isDigit).code - '0'.code
+            sum1 += (line.first(Char::isDigit) - '0') * 10 + (line.last(Char::isDigit) - '0')
             sum2 += line.withIndex().map { (idx, c) ->
                 c.digitToIntOrNull()
                     ?: line.substring(idx).let { sub -> DIGITS.indexOfFirst { dig -> sub.startsWith(dig) } + 1 }
