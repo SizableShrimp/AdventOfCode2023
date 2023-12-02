@@ -24,11 +24,28 @@
 package me.sizableshrimp.adventofcode2023.days
 
 import me.sizableshrimp.adventofcode2023.templates.Day
+import kotlin.math.max
 
 class Day02 : Day() {
     override fun evaluate(): Result {
-        return Result.of(null, null)
+        val games = this.lines.map { line ->
+            line.indexOf(':').let { colonIdx ->
+                Game(line.substring(5, colonIdx).toInt(), line.substring(colonIdx + 2).split("; ").map { round ->
+                    sortedMapOf(reverseOrder(), 'r' to 0, 'g' to 0, 'b' to 0).apply {
+                        round.split(", ").map { it.split(" ") }.forEach { this[it[1][0]] = it[0].toInt() }
+                    }.values.toList()
+                })
+            }
+        }
+
+        return Result.of(games.filter { game ->
+            game.rounds.all { it[0] <= 12 && it[1] <= 13 && it[2] <= 14 }
+        }.sumOf { it.id }, games.sumOf { game ->
+            game.rounds.reduceRight { round, acc -> round.zip(acc).map { max(it.first, it.second) } }.reduceRight(Int::times)
+        })
     }
+
+    private data class Game(val id: Int, val rounds: List<List<Int>>)
 
     companion object {
         @JvmStatic
