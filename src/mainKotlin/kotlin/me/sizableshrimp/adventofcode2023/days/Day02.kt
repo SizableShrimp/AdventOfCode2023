@@ -30,22 +30,20 @@ class Day02 : Day() {
     override fun evaluate(): Result {
         val games = this.lines.map { line ->
             line.indexOf(':').let { colonIdx ->
-                Game(line.substring(5, colonIdx).toInt(), line.substring(colonIdx + 2).split("; ").map { round ->
+                line.substring(5, colonIdx).toInt() to line.substring(colonIdx + 2).split("; ").map { round ->
                     sortedMapOf(reverseOrder(), 'r' to 0, 'g' to 0, 'b' to 0).apply {
                         round.split(", ").map { it.split(" ") }.forEach { this[it[1][0]] = it[0].toInt() }
                     }.values.toList()
-                })
+                }.reduceRight { round, acc -> round.zip(acc).map { max(it.first, it.second) } }
             }
         }
 
-        return Result.of(games.filter { game ->
-            game.rounds.all { it[0] <= 12 && it[1] <= 13 && it[2] <= 14 }
-        }.sumOf { it.id }, games.sumOf { game ->
-            game.rounds.reduceRight { round, acc -> round.zip(acc).map { max(it.first, it.second) } }.reduceRight(Int::times)
+        return Result.of(games.filter { (_, round) ->
+            round[0] <= 12 && round[1] <= 13 && round[2] <= 14
+        }.sumOf { it.first }, games.sumOf { (_, round) ->
+            round.reduceRight(Int::times)
         })
     }
-
-    private data class Game(val id: Int, val rounds: List<List<Int>>)
 
     companion object {
         @JvmStatic
