@@ -31,12 +31,11 @@ class Day01 : Day() {
         var sum2 = 0
 
         for (line in this.lines) {
-            sum1 += (line.first(Char::isDigit).code - '0'.code) * 10 + line.last(Char::isDigit).code - '0'.code
-            val match2 = P2_REGEX.matchEntire(line)!!
-            val first2 = match2.groups[1]!!.value
-            val last2 = match2.groups[2]?.value ?: first2
-            sum2 += ((if (first2.length == 1) first2[0].code - '0'.code else DIGITS.indexOf(first2) + 1) * 10
-                    + if (last2.length == 1) last2[0].code - '0'.code else DIGITS.indexOf(last2) + 1)
+            sum1 += (line.first(Char::isDigit) - '0') * 10 + line.last(Char::isDigit).code - '0'.code
+            sum2 += line.withIndex().map { (idx, c) ->
+                c.digitToIntOrNull()
+                    ?: line.substring(idx).let { sub -> DIGITS.indexOfFirst { dig -> sub.startsWith(dig) } + 1 }
+            }.filter { it != 0 }.let { it.first() * 10 + it.last() }
         }
 
         return Result(sum1, sum2)
@@ -44,8 +43,6 @@ class Day01 : Day() {
 
     companion object {
         private val DIGITS = listOf("one", "two", "three", "four", "five", "six", "seven", "eight", "nine")
-        private const val DIGIT_MATCH_P2 = "(\\d|one|two|three|four|five|six|seven|eight|nine)"
-        private val P2_REGEX = Regex(".*?$DIGIT_MATCH_P2.*(?<=$DIGIT_MATCH_P2).*?")
 
         @JvmStatic
         fun main(args: Array<String>) {
