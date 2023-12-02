@@ -52,6 +52,21 @@ public class LineConvert {
     }
 
     /**
+     * Find all digits (0-9) in a line.
+     *
+     * @param line the line
+     * @return the digits found in the line
+     */
+    public static IntList digits(String line) {
+        IntList result = new IntArrayList();
+        for (char c : line.toCharArray()) {
+            if (Character.isDigit(c))
+                result.add(Character.getNumericValue(c));
+        }
+        return result;
+    }
+
+    /**
      * Find all integers in a line.
      *
      * @param line The string line.

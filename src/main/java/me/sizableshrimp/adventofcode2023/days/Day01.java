@@ -23,8 +23,10 @@
 
 package me.sizableshrimp.adventofcode2023.days;
 
+import me.sizableshrimp.adventofcode2023.helper.FieldUtil;
 import me.sizableshrimp.adventofcode2023.templates.SeparatedDay;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Day01 extends SeparatedDay {
@@ -39,6 +41,22 @@ public class Day01 extends SeparatedDay {
             "eight",
             "nine"
     );
+    private static final List<List<String>> DIGITS_CACHE = FieldUtil.make(DIGITS, l -> {
+        List<List<String>> ret = new ArrayList<>(26);
+        for (int i = 0; i < 26; i++) {
+            ret.add(null);
+        }
+        for (String digitStr : l) {
+            int i = digitStr.charAt(0) - 'a';
+            List<String> subList = ret.get(i);
+            if (subList == null) {
+                subList = new ArrayList<>();
+                ret.set(i, subList);
+            }
+            subList.add(digitStr);
+        }
+        return ret;
+    });
 
     public static void main(String[] args) {
         new Day01().run();
@@ -55,44 +73,30 @@ public class Day01 extends SeparatedDay {
     }
 
     private int simulate(boolean part2) {
-        return this.lines.stream()
-                .mapToInt(s -> {
-                    boolean first = true;
-                    char firstC = '0';
-                    char last = '0';
-                    char[] charArray = s.toCharArray();
-                    for (int i = 0; i < charArray.length; i++) {
-                        char c = charArray[i];
-                        var sub = s.substring(i);
-                        boolean skip = false;
-                        if (part2) {
-                            for (String digitStr : DIGITS) {
-                                if (sub.startsWith(digitStr)) {
-                                    if (first) {
-                                        firstC = (char) ((DIGITS.indexOf(digitStr) + 1) + '0');
-                                        first = false;
-                                    }
-                                    last = (char) ((DIGITS.indexOf(digitStr) + 1) + '0');
-                                    // i += digitStr.length() - 1;
-                                    skip = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (skip)
-                            continue;
-                        if (Character.isDigit(c)) {
-                            if (first) {
-                                firstC = c;
-                                last = c;
-                                first = false;
-                            } else {
-                                last = c;
-                            }
-                        }
-                    }
-                    return Integer.parseInt(firstC + "" + last);
-                })
-                .sum();
+        int sum = 0;
+        for (String line : this.lines) {
+            sum += findDigit(line, false, part2) * 10 + findDigit(line, true, part2);
+        }
+        return sum;
+    }
+
+    private int findDigit(String line, boolean reverse, boolean part2) {
+        for (int i = reverse ? line.length() - 1 : 0; reverse ? i >= 0 : i < line.length(); i += reverse ? -1 : 1) {
+            char c = line.charAt(i);
+            if (Character.isDigit(c))
+                return c - '0';
+
+            if (part2 && (!reverse || i <= line.length() - 3)) {
+                List<String> digits = DIGITS_CACHE.get(c - 'a');
+                if (digits == null)
+                    continue;
+                for (String digit : digits) {
+                    if (line.startsWith(digit, i))
+                        return DIGITS.indexOf(digit) + 1;
+                }
+            }
+        }
+
+        throw new IllegalArgumentException();
     }
 }
