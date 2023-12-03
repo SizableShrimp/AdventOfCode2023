@@ -23,20 +23,93 @@
 
 package me.sizableshrimp.adventofcode2023.days;
 
-import me.sizableshrimp.adventofcode2023.templates.Day;
+import me.sizableshrimp.adventofcode2023.templates.SeparatedDay;
 
-public class Day02 extends Day {
+import java.util.ArrayList;
+import java.util.List;
+
+public class Day02 extends SeparatedDay {
+    private List<Game> games;
+
     public static void main(String[] args) {
         new Day02().run();
     }
 
     @Override
-    protected Result evaluate() {
-        return Result.of(null, null);
+    protected Object part1() {
+        int sum = 0;
+
+        outer:
+        for (Game game : this.games) {
+            for (Round round : game.rounds) {
+                if (round.red > 12 || round.green > 13 || round.blue > 14)
+                    continue outer;
+            }
+
+            sum += game.id;
+        }
+
+        return sum;
+    }
+
+    @Override
+    protected Object part2() {
+        int sum = 0;
+
+        for (Game game : this.games) {
+            int maxRed = 0;
+            int maxGreen = 0;
+            int maxBlue = 0;
+
+            for (Round round : game.rounds) {
+                maxRed = Math.max(maxRed, round.red);
+                maxGreen = Math.max(maxGreen, round.green);
+                maxBlue = Math.max(maxBlue, round.blue);
+            }
+
+            sum += maxRed * maxGreen * maxBlue;
+        }
+
+        return sum;
     }
 
     @Override
     protected void parse() {
+        this.games = new ArrayList<>();
 
+        for (String line : this.lines) {
+            int colonIndex = line.indexOf(':');
+            int id = Integer.parseInt(line.substring(5, colonIndex));
+            String[] roundStrings = line.substring(colonIndex + 2).split(";");
+            List<Round> rounds = new ArrayList<>();
+
+            for (String round : roundStrings) {
+                int r = 0;
+                int g = 0;
+                int b = 0;
+                String[] sets = round.trim().split(",");
+
+                for (String set : sets) {
+                    set = set.trim();
+                    int spaceIdx = set.indexOf(' ');
+                    char type = set.charAt(spaceIdx + 1);
+                    int value = Integer.parseInt(set.substring(0, spaceIdx));
+
+                    switch (type) {
+                        case 'r' -> r = value;
+                        case 'g' -> g = value;
+                        case 'b' -> b = value;
+                    }
+                }
+
+                rounds.add(new Round(r, g, b));
+            }
+
+            this.games.add(new Game(id, rounds));
+        }
     }
+
+    private record Game(int id, List<Round> rounds) {}
+
+    private record Round(int red, int green, int blue) {}
 }
