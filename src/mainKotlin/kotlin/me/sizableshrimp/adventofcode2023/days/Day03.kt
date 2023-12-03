@@ -27,56 +27,76 @@ import me.sizableshrimp.adventofcode2023.helper.GridHelper
 import me.sizableshrimp.adventofcode2023.templates.Coordinate
 import me.sizableshrimp.adventofcode2023.templates.Day
 import me.sizableshrimp.adventofcode2023.templates.Direction
-import java.lang.StringBuilder
 
 class Day03 : Day() {
     override fun evaluate(): Result {
+        // Oneliner!
+        // java.io.File("aoc_input/day03.txt").readLines().let { lines ->
+        //     lines.mapIndexed { y, row ->
+        //         row.withIndex().filter { it.value != '.' && !it.value.isDigit() }.map { (x, c) ->
+        //             c to arrayOf(-1 to -1, 0 to -1, 1 to -1, -1 to 0, 1 to 0, -1 to 1, 0 to 1, 1 to 1)
+        //                 .map { dir -> (x + dir.first) to (y + dir.second) }
+        //                 .filterNot { it.first < 0 || it.first >= row.lastIndex || it.second < 0 || it.second >= lines.size }
+        //                 .filter { lines[it.second][it.first].isDigit() }
+        //                 .map { p ->
+        //                     generateSequence(p) { (it.first - 1) to it.second }
+        //                         .takeWhile { it.first >= 0 && lines[it.second][it.first].isDigit() }
+        //                         .last()
+        //                 }.distinct().map { p ->
+        //                     p to (generateSequence(p) { (it.first + 1) to it.second }
+        //                         .takeWhile { it.first <= row.lastIndex && this.lines[it.second][it.first].isDigit() }
+        //                         .map { lines[it.second][it.first] }
+        //                         .joinToString("").toInt())
+        //                 }
+        //         }
+        //     }
+        // }.let { symData ->
+        //     (symData.flatMap { row -> row.flatMap { it.second } }.distinctBy { it.first }.sumOf { it.second }) to
+        //             (symData.sumOf { row -> row.filter { it.first == '*' && it.second.size == 2}.sumOf { p -> p.second.map { it.second }.reduce(Int::times) } })
+        // }.also { (p1, p2) -> println("p1: $p1, p2: $p2") }
+
         val grid = GridHelper.convertChar(this.lines) { it }
         val ids = mutableMapOf<Coordinate, Int>()
-        val gears = mutableMapOf<Coordinate, MutableSet<Pair<Coordinate, Int>>>()
+        val gearRatios = mutableListOf<Int>()
 
         for ((y, row) in grid.withIndex()) {
-            inner@ for ((x, c) in row.withIndex()) {
+            for ((x, c) in row.withIndex()) {
                 val coord = Coordinate.of(x, y)
-                if (c.isDigit().not())
+                if (c == '.' || c.isDigit())
                     continue
+
+                val gearData = if (c == '*') mutableMapOf<Coordinate, Int>() else null
 
                 for (dir in Direction.cardinalOrdinalDirections()) {
                     val offset = coord.resolve(dir)
-                    if (!GridHelper.isValid(grid, offset))
+                    if (!GridHelper.isValid(grid, offset) || !grid[offset.y][offset.x].isDigit())
                         continue
 
-                    val otherC = grid[offset.y][offset.x]
-                    if (otherC != '.' && otherC.isDigit().not()) {
-                        var tempCoord = coord
-                        while (GridHelper.isValid(grid, tempCoord) && grid[tempCoord.y][tempCoord.x].isDigit()) {
-                            tempCoord = tempCoord.resolve(Direction.WEST)
-                        }
-                        val builder = StringBuilder()
+                    var tempCoord = offset
+                    do {
+                        tempCoord = tempCoord.resolve(Direction.WEST)
+                    } while (GridHelper.isValid(grid, tempCoord) && grid[tempCoord.y][tempCoord.x].isDigit())
+
+                    var id = 0
+                    tempCoord = tempCoord.resolve(Direction.EAST)
+                    val partNumPos = tempCoord
+                    do {
+                        id = id * 10 + (grid[tempCoord.y][tempCoord.x] - '0')
                         tempCoord = tempCoord.resolve(Direction.EAST)
-                        val pos = tempCoord
-                        while (GridHelper.isValid(grid, tempCoord) && grid[tempCoord.y][tempCoord.x].isDigit()) {
-                            builder.append(grid[tempCoord.y][tempCoord.x])
-                            tempCoord = tempCoord.resolve(Direction.EAST)
-                        }
-                        val id = builder.toString().toInt()
-                        ids[tempCoord] = id
+                    } while (GridHelper.isValid(grid, tempCoord) && grid[tempCoord.y][tempCoord.x].isDigit())
 
-                        if (otherC == '*') {
-                            val gearSet = gears.getOrPut(offset) {
-                                mutableSetOf()
-                            }
-                            if (!gearSet.any { it.first == pos })
-                                gearSet.add(pos to id)
-                        }
+                    ids[partNumPos] = id
+                    if (c == '*')
+                        gearData!![partNumPos] = id
+                }
 
-                        continue@inner
-                    }
+                if (c == '*' && gearData!!.size == 2) {
+                    gearRatios.add(gearData.values.reduce(Int::times))
                 }
             }
         }
 
-        return Result.of(ids.values.sum(), gears.filter { it.value.size == 2 }.map { it.value.first().second * it.value.last().second }.sum())
+        return Result.of(ids.values.sum(), gearRatios.sum())
     }
 
     companion object {
