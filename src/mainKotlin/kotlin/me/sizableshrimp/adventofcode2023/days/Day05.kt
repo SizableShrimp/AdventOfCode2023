@@ -28,6 +28,37 @@ import me.sizableshrimp.adventofcode2023.util.splitOnBlankLines
 
 class Day05 : Day() {
     override fun evaluate(): Result {
+        // Oneliner!
+        // java.io.File("aoc_input/day05.txt").readLines().also { lines ->
+        //     lines.drop(2).joinToString("\n").split("\n\n").map { it.split("\n").drop(1) }.map { l ->
+        //         l.map { it.split(" ").map(String::toLong) }.map { (destStart, inStart, length) ->
+        //             inStart..<(inStart + length) to destStart - inStart
+        //         }
+        //     }.let { mappings ->
+        //         lines[0].substring(7).split(" ").map { it.toLong() }.let { base ->
+        //             listOf(base.map { it..it }.toList(), base.windowed(2, step = 2).map { (a, b) -> a..<(a + b) }.toList())
+        //         }.map { seeds ->
+        //             mappings.fold(seeds) { acc, l ->
+        //                 l.fold(listOf<LongRange>() to acc) { toCheck, (mapper, offset) ->
+        //                     toCheck.second.map {
+        //                         (mapper.contains(it.first) to mapper.contains(it.last)).let { (hasF, hasL) ->
+        //                             if (hasF && hasL)
+        //                                 (it.first + offset)..(it.last + offset) to listOf()
+        //                             else if (hasF)
+        //                                 (it.first + offset)..(mapper.last + offset) to listOf((mapper.last + 1)..it.last)
+        //                             else if (hasL)
+        //                                 (mapper.first + offset)..(it.last + offset) to listOf(it.first..<mapper.first)
+        //                             else if (it.contains(mapper.first) && it.contains(mapper.last))
+        //                                 (mapper.first + offset)..(mapper.last + offset) to listOf(it.first..<mapper.first, (mapper.last + 1)..it.last)
+        //                             else null to listOf(it)
+        //                         }
+        //                     }.unzip().let { (toCheck.first + it.first.filterNotNull()) to it.second.flatten() }
+        //                 }.let { it.first + it.second }
+        //             }.minOf { it.first }
+        //         }
+        //     }.also { (p1, p2) -> println("p1: $p1, p2: $p2") }
+        // }
+
         val mappings = this.lines.drop(2).splitOnBlankLines().map { it.drop(1) }.map { l ->
             l.map { it.split(" ").map(String::toLong) }.map { (destStart, inStart, length) ->
                 inStart..<(inStart + length) to destStart - inStart
