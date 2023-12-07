@@ -62,23 +62,23 @@ class Day07 : Day() {
         val occurrences = OccurrenceHelper.getOccurrences(hand.toCharArray().toList())
 
         when (occurrences.size) {
-            1 -> 6
+            1 -> 6 // Five of a kind
             2 -> {
                 if (occurrences.values.any { it == 4L })
-                    5
+                    5 // Four of a kind
                 else // if (sizesSet == setOf(2, 3))
-                    4
+                    4 // Full house
             }
 
             3 -> {
                 if (occurrences.values.any { it == 3L })
-                    3
+                    3 // Three of a kind
                 else // if (sizesSet == listOf(1, 2, 2))
-                    2
+                    2 // Two pair
             }
 
-            4 -> 1
-            5 -> 0
+            4 -> 1 // One pair
+            5 -> 0 // High card
             else -> error("Not possible")
         }.also {
             cache[hand] = it
