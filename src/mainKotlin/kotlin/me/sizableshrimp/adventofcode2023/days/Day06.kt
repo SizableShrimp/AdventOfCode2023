@@ -24,6 +24,7 @@
 package me.sizableshrimp.adventofcode2023.days
 
 import me.sizableshrimp.adventofcode2023.templates.Day
+import kotlin.math.sqrt
 
 class Day06 : Day() {
     override fun evaluate(): Result {
@@ -32,7 +33,7 @@ class Day06 : Day() {
                     listOf(line.replace(" ", "").toLong())
         }.unzip().toList().map { (times, distances) ->
             times.zip(distances).map { (time, distance) ->
-                (1..<time).sumOf { speed -> if ((time - speed) * speed > distance) 1L else 0L }
+                sqrt(((time * time) - 4 * distance).toDouble()).let { it.toLong() + (1 - time.and(1L)).or(((it % 1) / 0.5).toLong()) }
             }.reduce(Long::times)
         }
 
