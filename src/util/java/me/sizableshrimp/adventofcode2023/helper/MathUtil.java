@@ -34,6 +34,16 @@ public class MathUtil {
         return a;
     }
 
+    public static int gcd(int... numbers) {
+        int result = numbers[0];
+
+        for (int i = 1; i < numbers.length; i++) {
+            result = gcd(result, numbers[i]);
+        }
+
+        return result;
+    }
+
     public static long gcd(long a, long b) {
         while (b != 0) {
             long temp = b;
@@ -44,11 +54,41 @@ public class MathUtil {
         return a;
     }
 
+    public static long gcd(long... numbers) {
+        long result = numbers[0];
+
+        for (int i = 1; i < numbers.length; i++) {
+            result = gcd(result, numbers[i]);
+        }
+
+        return result;
+    }
+
     public static int lcm(int a, int b) {
         return Math.abs(a * b) / gcd(a, b);
     }
 
+    public static int lcm(int... numbers) {
+        int result = numbers[0];
+
+        for (int i = 1; i < numbers.length; i++) {
+            result = lcm(result, numbers[i]);
+        }
+
+        return result;
+    }
+
     public static long lcm(long a, long b) {
         return Math.abs(a * b) / gcd(a, b);
+    }
+
+    public static long lcm(long... numbers) {
+        long result = numbers[0];
+
+        for (int i = 1; i < numbers.length; i++) {
+            result = lcm(result, numbers[i]);
+        }
+
+        return result;
     }
 }
