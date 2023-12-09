@@ -28,23 +28,14 @@ import me.sizableshrimp.adventofcode2023.templates.Day
 class Day09 : Day() {
     override fun evaluate(): Result {
         val results = this.lines.map { it.split(" ").map { s -> s.toInt() } }.map { startingNums ->
-            var temp = startingNums.toMutableList()
-            val lists = mutableListOf(temp)
-
-            while (temp.any { it != 0 }) {
-                temp = temp.windowed(2, 1).map { (a, b) ->
-                    b - a
-                }.toMutableList()
-                lists.add(temp)
-            }
-
-            lists.withIndex().drop(1).reversed().forEach { (idx, list) ->
-                val above = lists[idx - 1]
-                above.add(0, above.first() - list.first())
-                above.add(above.last() + list.last())
-            }
-
-            lists.first().let { l -> l.last() to l.first() }
+            generateSequence(startingNums) { l ->
+                l.windowed(2).map { (a, b) -> b - a }
+            }.takeWhile { l -> l.any { it != 0 } }
+                .toList()
+                .reversed()
+                .reduce { l, above ->
+                    listOf(above.first() - l.first(), l.last() + above.last())
+                }.let { l -> l.last() to l.first() }
         }
 
         return Result.of(results.sumOf { it.first }, results.sumOf { it.second })
