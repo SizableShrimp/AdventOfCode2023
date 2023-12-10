@@ -27,7 +27,6 @@ import me.sizableshrimp.adventofcode2023.helper.GridHelper
 import me.sizableshrimp.adventofcode2023.templates.Coordinate
 import me.sizableshrimp.adventofcode2023.templates.Day
 import me.sizableshrimp.adventofcode2023.templates.Direction
-import me.sizableshrimp.adventofcode2023.util.div
 
 class Day10 : Day() {
     override fun evaluate(): Result {

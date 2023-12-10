@@ -44,11 +44,13 @@ public record HyperCoordinate(int x, int y, int z, int w) {
      * @return A new {@link HyperCoordinate} object.
      */
     public static HyperCoordinate parse(String coord) {
-        String[] arr = coord.split(",");
-        int x = Integer.parseInt(arr[0]);
-        int y = Integer.parseInt(arr[1]);
-        int z = Integer.parseInt(arr[2]);
-        int w = Integer.parseInt(arr[3]);
+        int commaIdx = coord.indexOf(',');
+        int x = Integer.parseInt(coord.substring(0, commaIdx));
+        int commaIdx2 = coord.indexOf(',', commaIdx + 1);
+        int y = Integer.parseInt(coord.substring(commaIdx + 1, commaIdx2));
+        int commaIdx3 = coord.indexOf(',', commaIdx2 + 1);
+        int z = Integer.parseInt(coord.substring(commaIdx2 + 1, commaIdx3));
+        int w = Integer.parseInt(coord.substring(commaIdx3 + 1));
         return new HyperCoordinate(x, y, z, w);
     }
 

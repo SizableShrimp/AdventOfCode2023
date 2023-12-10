@@ -309,6 +309,42 @@ public class GridHelper {
         return isValid(x, y, grid[0].length, grid.length);
     }
 
+    public static boolean isValid(byte[][] grid, Coordinate base, Direction offset) {
+        return isValid(grid, base.x() + offset.x, base.y() + offset.y);
+    }
+
+    public static boolean isValid(byte[][] grid, Coordinate coord) {
+        return isValid(grid, coord.x(), coord.y());
+    }
+
+    public static boolean isValid(byte[][] grid, int x, int y) {
+        return isValid(x, y, grid[0].length, grid.length);
+    }
+
+    public static boolean isValid(float[][] grid, Coordinate base, Direction offset) {
+        return isValid(grid, base.x() + offset.x, base.y() + offset.y);
+    }
+
+    public static boolean isValid(float[][] grid, Coordinate coord) {
+        return isValid(grid, coord.x(), coord.y());
+    }
+
+    public static boolean isValid(float[][] grid, int x, int y) {
+        return isValid(x, y, grid[0].length, grid.length);
+    }
+
+    public static boolean isValid(double[][] grid, Coordinate base, Direction offset) {
+        return isValid(grid, base.x() + offset.x, base.y() + offset.y);
+    }
+
+    public static boolean isValid(double[][] grid, Coordinate coord) {
+        return isValid(grid, coord.x(), coord.y());
+    }
+
+    public static boolean isValid(double[][] grid, int x, int y) {
+        return isValid(x, y, grid[0].length, grid.length);
+    }
+
     public static boolean isValid(int x, int y, int width, int height) {
         return y >= 0 && y < height && x >= 0 && x < width;
     }

@@ -27,6 +27,7 @@ import me.sizableshrimp.adventofcode2023.helper.GridHelper
 import me.sizableshrimp.adventofcode2023.templates.Coordinate
 import me.sizableshrimp.adventofcode2023.templates.Day
 import me.sizableshrimp.adventofcode2023.templates.Direction
+import me.sizableshrimp.adventofcode2023.util.getCardinalOrdinalNeighbors
 
 class Day03 : Day() {
     override fun evaluate(): Result {
@@ -67,9 +68,8 @@ class Day03 : Day() {
 
                 val gearData = if (c == '*') mutableMapOf<Coordinate, Int>() else null
 
-                for (dir in Direction.cardinalOrdinalDirections()) {
-                    val offset = coord.resolve(dir)
-                    if (!GridHelper.isValid(grid, offset) || !grid[offset.y][offset.x].isDigit())
+                for ((_, offset) in grid.getCardinalOrdinalNeighbors(coord)) {
+                    if (!grid[offset.y][offset.x].isDigit())
                         continue
 
                     var tempCoord = offset
