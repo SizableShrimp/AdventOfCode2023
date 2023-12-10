@@ -65,102 +65,24 @@ class Day10 : Day() {
             }
         }
 
-        // Part 2: We can allow filling between pipes by imagining a grid with 2x the size.
-        // Consider the following part of a larger grid (the loop is assumed to be continuous):
-        // OL7
-        // 7.|
-        // L-J
-        // O represents a spot we know to be outside the loop.
-        //
-        // We know that the center empty space should be considered outside the loop because it can escape
-        // between the 7 and L. Let's represent this grid with 2x the size:
-        // OOL-7.
-        // OO..|.
-        // 7...|.
-        // |...|.
-        // L---J.
-        // ......
-        //
-        // We can think of this as simply "zooming in" to the grid to have a higher resolution.
-        // It now becomes obvious that the inner spot should in fact be considered as outside the loop.
-        // We can do a flood fill to find all outside spots on this 2x grid.
-        // Any spot on the 2x grid can be turned back into a coordinate on the original grid by dividing
-        // the x and y by 2 with integer division.
-        val doubleGrid = Array(grid.size * 2) { CharArray(grid[it / 2].size * 2) { '.' } }
+        var insideLoopCount = 0
 
-        for ((y, row) in grid.withIndex()) {
-            for ((x, c) in row.withIndex()) {
-                val newCoord = Coordinate(x * 2, y * 2)
-                doubleGrid[newCoord.y][newCoord.x] = c
-                val newCoordRight = newCoord.resolve(Direction.EAST)
-                doubleGrid[newCoordRight.y][newCoordRight.x] = when (c) {
-                    'F' -> '-'
-                    '7' -> '.'
-                    'J' -> '.'
-                    'L' -> '-'
-                    '-' -> '-'
-                    '|' -> '.'
-                    '.' -> '.'
-                    else -> error("Invalid char: $c")
+        // https://en.wikipedia.org/wiki/Point_in_polygon#Ray_casting_algorithm
+        for (y in 1..<grid.size-1) {
+            val row = grid[y]
+            var inside = false
+            for (c in row) {
+                if (c == '|' || c == 'J' || c == 'L') {
+                    inside = !inside
+                } else if (c == '.' && inside) {
+                    insideLoopCount++
                 }
-                val newCoordDown = newCoord.resolve(Direction.SOUTH)
-                doubleGrid[newCoordDown.y][newCoordDown.x] = when (c) {
-                    'F' -> '|'
-                    '7' -> '|'
-                    'J' -> '.'
-                    'L' -> '.'
-                    '-' -> '.'
-                    '|' -> '|'
-                    '.' -> '.'
-                    else -> error("Invalid char: $c")
-                }
-                // We implicitly leave the bottom-right corner of every 2x2 square as a '.'
-                // in the "zoomed-in" grid.
-            }
-        }
-
-        val queue = ArrayDeque<Coordinate>()
-        val outsideLoop = mutableSetOf<Coordinate>() // Coordinates that are outside the loop
-
-        // Because the problem description enforces a continuous loop of pipes, we know that
-        // there must be at least one empty spot on the grid's edge if we want to be able to flood fill
-        // between the pipes. If there is no empty spot on the grid's edge, then there is nothing to flood
-        // fill, so there are no spots outside the loop.
-        for (x in doubleGrid.indices) {
-            if (doubleGrid[0][x] == '.') {
-                outsideLoop.add(Coordinate(x, 0))
-            }
-            if (doubleGrid[doubleGrid.size - 1][x] == '.') {
-                outsideLoop.add(Coordinate(x, doubleGrid.size - 1))
-            }
-        }
-        for (y in doubleGrid.indices) {
-            if (doubleGrid[y][0] == '.') {
-                outsideLoop.add(Coordinate(0, y))
-            }
-            if (doubleGrid[y][doubleGrid[y].size - 1] == '.') {
-                outsideLoop.add(Coordinate(doubleGrid[y].size - 1, y))
-            }
-        }
-        queue.addAll(outsideLoop)
-
-        while (!queue.isEmpty()) {
-            val coord = queue.removeFirst()
-
-            for (dir in Direction.cardinalDirections()) {
-                val next = coord.resolve(dir)
-
-                if (!GridHelper.isValid(doubleGrid, next) || doubleGrid[next.y][next.x] != '.' || !outsideLoop.add(next))
-                    continue
-
-                queue.add(next)
             }
         }
 
         // Part 1: The pipe loop is continuous and therefore must be even in size. The furthest distance on the loop is half the
         //         size of the loop because the furthest point has an even number of pipes on either side back to the start.
-        // Part 2: The number of inside spots is the total number of spots minus (the number of outside & pipe spots).
-        return Result.of(pipes.size / 2, this.lines.sumOf { it.length } - (pipes + outsideLoop.map { it / 2 }).size)
+        return Result.of(pipes.size / 2, insideLoopCount)
     }
 
     companion object {
