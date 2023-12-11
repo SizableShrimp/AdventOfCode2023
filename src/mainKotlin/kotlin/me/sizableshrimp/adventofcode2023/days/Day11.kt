@@ -26,42 +26,29 @@ package me.sizableshrimp.adventofcode2023.days
 import me.sizableshrimp.adventofcode2023.helper.GridHelper
 import me.sizableshrimp.adventofcode2023.helper.Itertools
 import me.sizableshrimp.adventofcode2023.templates.Day
-import me.sizableshrimp.adventofcode2023.templates.LongCoordinate
 
 class Day11 : Day() {
     override fun evaluate(): Result {
-        val coords = GridHelper.convertToSet(this.lines) { it == '#' }
-        val width = this.lines[0].length
-        val height = this.lines.size
-        val expandYs = mutableSetOf<Int>()
-        val expandXs = mutableSetOf<Int>()
-
-        for (y in 0..<height) {
-            val yCoords = coords.filter { it.y == y }
-            if (yCoords.isEmpty())
-                expandYs.add(y)
+        val (p1, p2) = GridHelper.convertToSet(this.lines) { it == '#' }.let { coords ->
+            listOf(
+                (0..<this.lines[0].length).map { y -> coords.filter { it.y == y } },
+                (0..<this.lines.size).map { x -> coords.filter { it.x == x } }
+            ).fold(0L to 0L) { tot, l ->
+                l.fold(listOf(0L, 0L, 0L)) { acc, c ->
+                    if (c.isEmpty()) {
+                        listOf(acc[0] + acc[2] * (coords.size - acc[2]), acc[1] + 999_999L * (acc[2] * (coords.size - acc[2])), acc[2])
+                    } else {
+                        listOf(acc[0], acc[1], acc[2] + c.size)
+                    }
+                }.let { (a, b) -> (tot.first + a) to (tot.second + b) }
+            }.let { (a, b) ->
+                Itertools.combinations(coords, 2).sumOf { (a, b) ->
+                    a.distance(b)
+                }.toLong().let { n -> (a + n) to (b + n) }
+            }
         }
 
-        for (x in 0..<width) {
-            val xCoords = coords.filter { it.x == x }
-            if (xCoords.isEmpty())
-                expandXs.add(x)
-        }
-
-        val expandedCoords = coords.map {
-            val xDiff = expandXs.count { x -> it.x >= x }.toLong()
-            val yDiff = expandYs.count { y -> it.y >= y }.toLong()
-            val newCoord = LongCoordinate.of(it)
-            newCoord.resolve(xDiff, yDiff) to newCoord.resolve(xDiff * 999999, yDiff * 999999)
-        }
-
-        val combos = Itertools.combinations(expandedCoords, 2)
-
-        val minLengths = combos.map { (a, b) ->
-            a.first.distance(b.first) to a.second.distance(b.second)
-        }
-
-        return Result.of(minLengths.sumOf { it.first }, minLengths.sumOf { it.second })
+        return Result.of(p1, p2)
     }
 
     companion object {
