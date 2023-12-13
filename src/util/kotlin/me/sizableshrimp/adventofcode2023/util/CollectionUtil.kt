@@ -256,6 +256,10 @@ fun Array<FloatArray>.deepCopy() = Array(this.size) { this[it].copyOf() }
 
 fun Array<BooleanArray>.deepCopy() = Array(this.size) { this[it].copyOf() }
 
+fun <T> List<T>.repeat(num: Int) = List(this.size * num) { this[it % this.size] }
+
+fun <T> T.repeat(num: Int) = List(num) { this }
+
 inline fun <reified T> Array<Array<T>>.deepCopy() = Array(this.size) { this[it].copyOf() }
 
 inline fun <T> Iterable<T>.allIndexed(predicate: (Int, T) -> Boolean): Boolean {
