@@ -179,6 +179,14 @@ public class GridHelper {
         return grid;
     }
 
+    public static char[][] convertChar(List<String> lines) {
+        return convertChar(lines, Char2CharFunction.identity());
+    }
+
+    public static char[][] createCharGrid(List<String> lines) {
+        return convertChar(lines);
+    }
+
     public static char[][] convertChar(List<String> lines, Char2CharFunction func) {
         return convertChar(new char[lines.size()][lines.get(0).length()], lines, func);
     }
@@ -204,27 +212,27 @@ public class GridHelper {
     }
 
     public static <T> void print(T[][] grid) {
-        System.out.print(Printer.toString(grid));
+        System.out.println(Printer.toString(grid));
     }
 
     public static <T extends Enum<T> & EnumState<T>> void print(T[][] grid) {
-        System.out.print(Printer.toString(grid));
+        System.out.println(Printer.toString(grid));
     }
 
     public static void print(int[][] grid) {
-        System.out.print(Printer.toString(grid));
+        System.out.println(Printer.toString(grid));
     }
 
     public static void print(long[][] grid) {
-        System.out.print(Printer.toString(grid));
+        System.out.println(Printer.toString(grid));
     }
 
     public static void print(boolean[][] grid) {
-        System.out.print(Printer.toString(grid));
+        System.out.println(Printer.toString(grid));
     }
 
     public static void print(char[][] grid) {
-        System.out.print(Printer.toString(grid));
+        System.out.println(Printer.toString(grid));
     }
 
     public static <T> int countOccurrences(T[][] grid, T target) {

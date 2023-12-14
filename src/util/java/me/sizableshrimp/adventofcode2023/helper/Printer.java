@@ -53,13 +53,18 @@ public class Printer {
         }
 
         StringBuilder builder = new StringBuilder();
+        boolean first = true;
 
         for (int y = minY; y <= maxY; y++) {
+            if (first) {
+                first = false;
+            } else {
+                builder.append('\n');
+            }
             for (int x = minX; x <= maxX; x++) {
                 Coordinate coord = Coordinate.of(x, y);
                 builder.append(function.apply(coords.contains(coord), coord));
             }
-            builder.append('\n');
         }
 
         return builder.toString();
@@ -75,12 +80,17 @@ public class Printer {
 
     public static <T> String toString(T[][] grid, Function<T, String> function) {
         StringBuilder builder = new StringBuilder();
+        boolean first = true;
 
         for (T[] row : grid) {
+            if (first) {
+                first = false;
+            } else {
+                builder.append('\n');
+            }
             for (T value : row) {
                 builder.append(function.apply(value));
             }
-            builder.append('\n');
         }
 
         return builder.toString();
@@ -88,12 +98,17 @@ public class Printer {
 
     public static <T extends Enum<T> & EnumState<T>> String toString(T[][] grid) {
         StringBuilder builder = new StringBuilder();
+        boolean first = true;
 
         for (T[] row : grid) {
+            if (first) {
+                first = false;
+            } else {
+                builder.append('\n');
+            }
             for (T value : row) {
                 builder.append(value.getMappedChar());
             }
-            builder.append('\n');
         }
 
         return builder.toString();
@@ -101,12 +116,17 @@ public class Printer {
 
     public static String toString(int[][] grid) {
         StringBuilder builder = new StringBuilder();
+        boolean first = true;
 
         for (int[] row : grid) {
+            if (first) {
+                first = false;
+            } else {
+                builder.append('\n');
+            }
             for (int value : row) {
                 builder.append(value);
             }
-            builder.append('\n');
         }
 
         return builder.toString();
@@ -114,12 +134,17 @@ public class Printer {
 
     public static String toString(long[][] grid) {
         StringBuilder builder = new StringBuilder();
+        boolean first = true;
 
         for (long[] row : grid) {
+            if (first) {
+                first = false;
+            } else {
+                builder.append('\n');
+            }
             for (long value : row) {
                 builder.append(value);
             }
-            builder.append('\n');
         }
 
         return builder.toString();
@@ -131,12 +156,17 @@ public class Printer {
 
     public static String toString(boolean[][] grid, Boolean2ObjectFunction<String> function) {
         StringBuilder builder = new StringBuilder();
+        boolean first = true;
 
         for (boolean[] row : grid) {
+            if (first) {
+                first = false;
+            } else {
+                builder.append('\n');
+            }
             for (boolean value : row) {
                 builder.append(function.apply(value));
             }
-            builder.append('\n');
         }
 
         return builder.toString();
@@ -144,12 +174,17 @@ public class Printer {
 
     public static String toString(char[][] grid) {
         StringBuilder builder = new StringBuilder();
+        boolean first = true;
 
         for (char[] row : grid) {
+            if (first) {
+                first = false;
+            } else {
+                builder.append('\n');
+            }
             for (char value : row) {
                 builder.append(value);
             }
-            builder.append('\n');
         }
 
         return builder.toString();

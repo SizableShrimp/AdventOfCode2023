@@ -27,6 +27,11 @@ import me.sizableshrimp.adventofcode2023.helper.GridHelper
 import me.sizableshrimp.adventofcode2023.templates.Coordinate
 import me.sizableshrimp.adventofcode2023.templates.Direction
 
+inline fun <reified T> convertToGrid(lines: List<String>, func: (Char) -> T) =
+    Array(lines.size) { y -> Array(lines[y].length) { x -> func(lines[y][x]) } }
+
+fun List<String>.toCharGrid() = GridHelper.createCharGrid(this)
+
 fun <T> Array<Array<T>>.getCardinalNeighbors(coord: Coordinate) = Iterable {
     iterator<Pair<Direction, Coordinate>> {
         for (dir in Direction.cardinalDirections()) {
