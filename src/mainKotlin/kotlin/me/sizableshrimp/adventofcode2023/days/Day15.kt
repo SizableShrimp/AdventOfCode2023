@@ -24,58 +24,47 @@
 package me.sizableshrimp.adventofcode2023.days
 
 import me.sizableshrimp.adventofcode2023.templates.Day
-import me.sizableshrimp.adventofcode2023.util.splitOnBlankLines
 
-class Day13 : Day() {
+class Day15 : Day() {
     override fun evaluate(): Result {
-        val inputs = this.lines.splitOnBlankLines()
+        val instructions = this.lines[0].split(',')
+        val labels = instructions.map { l ->
+            l.substringBefore('-').substringBefore('=')
+        }
+        val (p1, hashes) = listOf(instructions, labels).map { it.map { l -> l.fold(0) { acc, c -> (acc + c.code) * 17 % 256 } } }
 
-        val (p1, p2) = listOf(false, true).map { allowSmudge ->
-            inputs.sumOf { rows ->
-                rows.indices.firstOrNull {
-                    isValid(rows, it, allowSmudge)
-                }?.let { return@sumOf 100 * (it + 1) }
+        val boxes = Array(256) { mutableListOf<Pair<String, Int>>() }
 
-                val columns = (0..<rows[0].length).map { j -> rows.map { row -> row[j] }.joinToString("") }
-                columns.indices.first {
-                    isValid(columns, it, allowSmudge)
-                } + 1
+        hashes.forEachIndexed { i, hash ->
+            val line = instructions[i]
+            val label = labels[i]
+            val remove = line.contains('-')
+            val lenses = boxes[hash]
+
+            if (remove) {
+                lenses.removeIf { it.first == label }
+            } else {
+                val insertIdx = lenses.indexOfFirst { it.first == label }
+                val key = label to line.substringAfter('=').toInt()
+                if (insertIdx == -1) {
+                    lenses.add(key)
+                } else {
+                    lenses[insertIdx] = key
+                }
             }
         }
 
-        return Result.of(p1, p2)
-    }
-
-    private fun isValid(layers: List<String>, idx: Int, allowSmudge: Boolean = false): Boolean {
-        if (idx >= layers.size - 1)
-            return false
-
-        var usedSmudged = !allowSmudge
-        var low = idx
-        var high = idx + 1
-
-        while (low >= 0 && high < layers.size) {
-            val lowLayer = layers[low]
-            val highLayer = layers[high]
-            if (lowLayer != highLayer) {
-                if (usedSmudged || lowLayer.zip(highLayer).count { (a, b) -> a != b } > 1)
-                    return false
-
-                usedSmudged = true
+        return Result.of(p1.sum(), boxes.withIndex().sumOf { (i, lenses) ->
+            lenses.withIndex().sumOf { (j, l) ->
+                (i + 1) * (j + 1) * l.second
             }
-
-            low--
-            high++
-        }
-
-        // There must be at least 1 smudge in Part 2
-        return usedSmudged
+        })
     }
 
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            Day13().run()
+            Day15().run()
         }
     }
 }
