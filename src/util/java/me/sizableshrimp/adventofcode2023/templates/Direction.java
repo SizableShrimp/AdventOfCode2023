@@ -119,6 +119,16 @@ public enum Direction {
         };
     }
 
+    public char getCharArrow() {
+        return switch (this) {
+            case NORTH -> '^';
+            case EAST -> '>';
+            case SOUTH -> 'v';
+            case WEST -> '<';
+            default -> throw new IllegalStateException("Not a cardinal direction: " + this);
+        };
+    }
+
     public Direction relativeDegrees(int degrees) {
         return fromDegrees(this.degrees + degrees);
     }
