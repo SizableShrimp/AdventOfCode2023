@@ -218,6 +218,14 @@ public record Coordinate(int x, int y) {
         return axis == Direction.Axis.X ? this.x : this.y;
     }
 
+    public int component1() {
+        return this.x;
+    }
+
+    public int component2() {
+        return this.y;
+    }
+
     @Override
     public String toString() {
         return String.format("(%d,%d)", this.x, this.y);

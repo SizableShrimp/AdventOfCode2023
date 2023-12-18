@@ -200,6 +200,14 @@ public record LongCoordinate(long x, long y) {
         return axis == Direction.Axis.X ? this.x : this.y;
     }
 
+    public long component1() {
+        return this.x;
+    }
+
+    public long component2() {
+        return this.y;
+    }
+
     @Override
     public String toString() {
         return String.format("(%d,%d)", this.x, this.y);
