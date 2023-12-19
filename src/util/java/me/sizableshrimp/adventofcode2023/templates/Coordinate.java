@@ -25,8 +25,6 @@ package me.sizableshrimp.adventofcode2023.templates;
 
 import me.sizableshrimp.adventofcode2023.helper.GridHelper;
 
-import java.util.Arrays;
-
 /**
  * A 2-dimensional coordinate object that holds an x and y value.
  */
@@ -172,7 +170,12 @@ public record Coordinate(int x, int y) {
      * or null if this is not possible in one move in cardinal or ordinal directions.
      */
     public Direction relative(Coordinate other) {
-        return Arrays.stream(Direction.cardinalOrdinalDirections()).filter(d -> resolve(d).equals(other)).findAny().orElse(null);
+        for (Direction dir : Direction.cardinalOrdinalDirections()) {
+            if (this.resolve(dir).equals(other))
+                return dir;
+        }
+
+        return null;
     }
 
     public Coordinate resolve(Direction direction) {

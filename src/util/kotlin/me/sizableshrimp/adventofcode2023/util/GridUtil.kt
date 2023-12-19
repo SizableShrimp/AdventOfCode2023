@@ -32,6 +32,14 @@ inline fun <reified T> convertToGrid(lines: List<String>, func: (Char) -> T) =
 
 fun List<String>.toCharGrid(): Array<CharArray> = GridHelper.createCharGrid(this)
 
+/**
+ * Creates a grid of single-digit integers based on the integer character
+ * at each point in the provided grid.
+ *
+ * @return the 2D grid of single-digit integers
+ */
+fun List<String>.toIntGrid(): Array<IntArray> = GridHelper.createIntGrid(this)
+
 fun <T> Array<Array<T>>.getCardinalNeighbors(coord: Coordinate) = Iterable {
     iterator<Pair<Direction, Coordinate>> {
         for (dir in Direction.cardinalDirections()) {

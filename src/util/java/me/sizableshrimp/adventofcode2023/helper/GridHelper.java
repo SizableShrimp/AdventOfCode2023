@@ -165,6 +165,17 @@ public class GridHelper {
         return convertInt(new int[lines.size()][lines.get(0).length()], lines, func);
     }
 
+    /**
+     * Creates a grid of single-digit integers based on the integer character
+     * at each point in the provided grid.
+     *
+     * @param lines the input lines to form a grid from
+     * @return the 2D grid of single-digit integers
+     */
+    public static int[][] createIntGrid(List<String> lines) {
+        return convertInt(lines, c -> c - '0');
+    }
+
     public static int[][] convertInt(int[][] grid, List<String> lines, Char2IntFunction func) {
         convert(lines, (y, x, c) -> grid[y][x] = func.apply(c));
         return grid;

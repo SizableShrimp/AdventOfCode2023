@@ -165,10 +165,20 @@ public enum Direction {
     }
 
     public enum Axis {
-        X, Y;
+        X(new Direction[]{Direction.EAST, Direction.WEST}), Y(new Direction[]{Direction.NORTH, Direction.SOUTH});
+
+        private final Direction[] directions;
+
+        Axis(Direction[] directions) {
+            this.directions = directions;
+        }
 
         public Axis opposite() {
             return this == X ? Y : X;
+        }
+
+        public Direction[] getDirections() {
+            return this.directions;
         }
     }
 }
