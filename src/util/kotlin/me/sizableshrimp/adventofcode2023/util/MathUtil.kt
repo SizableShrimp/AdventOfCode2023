@@ -29,12 +29,14 @@ infix fun Int.lcm(other: Int) = MathUtil.lcm(this, other)
 
 fun IntArray.lcm() = MathUtil.lcm(*this)
 
+@JvmName("lcmIntCollection")
 fun Collection<Int>.lcm() = this.toIntArray().lcm()
 
 infix fun Long.lcm(other: Long) = MathUtil.lcm(this, other)
 
 fun LongArray.lcm() = MathUtil.lcm(*this)
 
+@JvmName("lcmLongCollection")
 fun Collection<Long>.lcm() = this.toLongArray().lcm()
 
 infix fun Int.gcd(other: Int) = MathUtil.gcd(this, other)

@@ -23,7 +23,7 @@
 
 package me.sizableshrimp.adventofcode2023.util
 
-fun String.repeat(times: Int): String {
+fun String.repeatString(times: Int): String {
     val builder = StringBuilder()
     repeat(times) {
         builder.append(this)

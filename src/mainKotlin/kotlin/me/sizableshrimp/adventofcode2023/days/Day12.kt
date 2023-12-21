@@ -24,7 +24,7 @@
 package me.sizableshrimp.adventofcode2023.days
 
 import me.sizableshrimp.adventofcode2023.templates.Day
-import me.sizableshrimp.adventofcode2023.util.repeat
+import me.sizableshrimp.adventofcode2023.util.repeatElements
 
 class Day12 : Day() {
     override fun evaluate(): Result {
@@ -33,7 +33,7 @@ class Day12 : Day() {
             it.split(" ").let { (a, b) -> a to b.split(",").map { it.toInt() } }
         }.let { n ->
             n.sumOf { findArrangements(cache, it.first, it.second) } to
-                    n.sumOf { (data, groups) -> findArrangements(cache, "$data?$data?$data?$data?$data", groups.repeat(5)) }
+                    n.sumOf { (data, groups) -> findArrangements(cache, "$data?$data?$data?$data?$data", groups.repeatElements(5)) }
         }
 
         return Result.of(p1, p2)
