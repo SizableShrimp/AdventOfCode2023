@@ -28,7 +28,6 @@ import me.sizableshrimp.adventofcode2023.templates.Day
 import me.sizableshrimp.adventofcode2023.templates.Direction
 import me.sizableshrimp.adventofcode2023.util.getCardinalNeighbors
 import me.sizableshrimp.adventofcode2023.util.toCharGrid
-import java.util.PriorityQueue
 import kotlin.math.max
 
 class Day23 : Day() {
@@ -37,15 +36,15 @@ class Day23 : Day() {
         val start = Coordinate(1, 0)
         val target = Coordinate(grid[0].size - 2, grid.size - 1)
 
-        val paths = calculatePaths(start, grid)
+        val paths = calculatePaths(start, target, grid)
 
-        val p1 = traverse(start, target, paths, part2 = false)
-        val p2 = traverse(start, target, paths, part2 = true)
+        val p1 = traverse(paths, part2 = false)
+        val p2 = traverse(paths, part2 = true)
 
         return Result.of(p1, p2)
     }
 
-    private fun calculatePaths(start: Coordinate, grid: Array<CharArray>): Map<Coordinate, List<GraphNode>> {
+    private fun calculatePaths(start: Coordinate, target: Coordinate, grid: Array<CharArray>): Map<Long, List<GraphNodeOptimized>> {
         val queue = ArrayDeque<Node>()
         queue.add(Node(start, 0, start, null))
         val paths = mutableMapOf<Coordinate, MutableList<GraphNode>>()
@@ -72,41 +71,47 @@ class Day23 : Day() {
             }
         }
 
-        return paths
-    }
+        val ids = paths.keys.toList() + target
 
-    private fun traverse(start: Coordinate, target: Coordinate, paths: Map<Coordinate, List<GraphNode>>, part2: Boolean): Int {
-        val queue = PriorityQueue(compareBy<TraversalNode> { it.dist }.reversed())
-        queue.add(TraversalNode(start, 0, setOf(start)))
-        var maxDist = 0
-
-        while (queue.isNotEmpty()) {
-            val (coord, dist, seen) = queue.remove()
-
-            if (coord == target)
-                maxDist = max(maxDist, dist)
-
-            for ((next, nextDist, dir) in paths[coord] ?: continue) {
-                if (!part2 && dir != Direction.EAST && dir != Direction.SOUTH)
-                    continue
-
-                if (next in seen)
-                    continue
-
-                queue.add(TraversalNode(next, dist + nextDist, seen + next))
-            }
+        val pathsOptimized = paths.entries.associate { (k, v) ->
+            (1L shl ids.indexOf(k)) to v.map { n -> GraphNodeOptimized(1L shl ids.indexOf(n.coord), n.dist, n.dir) }
         }
 
-        return maxDist
+        return pathsOptimized
+    }
+
+    private fun traverse(paths: Map<Long, List<GraphNodeOptimized>>, part2: Boolean) = traverse(paths, part2, 1, 0, 1)
+
+    private fun traverse(paths: Map<Long, List<GraphNodeOptimized>>, part2: Boolean, coord: Long, dist: Int, seen: Long): Int {
+        if (coord == TARGET_COORD)
+            return dist
+
+        var max = 0
+
+        for ((next, nextDist, dir) in paths[coord]!!) {
+            if (!part2 && dir != Direction.EAST && dir != Direction.SOUTH)
+                continue
+
+            if (next and seen == next)
+                continue
+
+            val result = traverse(paths, part2, next, dist + nextDist, seen or next)
+            if (result > max)
+                max = max(result, max)
+        }
+
+        return max
     }
 
     private data class Node(val coord: Coordinate, val dist: Int, val start: Coordinate, val prior: Node?)
 
     private data class GraphNode(val coord: Coordinate, val dist: Int, val dir: Direction)
 
-    private data class TraversalNode(val coord: Coordinate, val dist: Int, val seen: Set<Coordinate>)
+    private data class GraphNodeOptimized(val coord: Long, val dist: Int, val dir: Direction)
 
     companion object {
+        private const val TARGET_COORD = 1L shl 35
+
         @JvmStatic
         fun main(args: Array<String>) {
             Day23().run()
