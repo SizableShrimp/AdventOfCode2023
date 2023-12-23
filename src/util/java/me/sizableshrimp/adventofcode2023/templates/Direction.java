@@ -76,10 +76,10 @@ public enum Direction {
 
     public static Direction getCardinalDirection(char c) {
         return switch (c) {
-            case 'N', 'U' -> NORTH;
-            case 'E', 'R' -> EAST;
-            case 'S', 'D' -> SOUTH;
-            case 'W', 'L' -> WEST;
+            case 'N', 'U', '^' -> NORTH;
+            case 'E', 'R', '>' -> EAST;
+            case 'S', 'D', 'v' -> SOUTH;
+            case 'W', 'L', '<' -> WEST;
             default -> throw new IllegalStateException("Unexpected value: " + c);
         };
     }
