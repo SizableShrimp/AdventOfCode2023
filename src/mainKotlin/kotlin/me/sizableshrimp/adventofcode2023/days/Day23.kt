@@ -28,7 +28,6 @@ import me.sizableshrimp.adventofcode2023.templates.Day
 import me.sizableshrimp.adventofcode2023.templates.Direction
 import me.sizableshrimp.adventofcode2023.util.getCardinalNeighbors
 import me.sizableshrimp.adventofcode2023.util.toCharGrid
-import kotlin.math.max
 
 class Day23 : Day() {
     override fun evaluate(): Result {
@@ -97,7 +96,7 @@ class Day23 : Day() {
 
             val result = traverse(paths, part2, next, dist + nextDist, seen or next)
             if (result > max)
-                max = max(result, max)
+                max = result
         }
 
         return max
