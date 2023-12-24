@@ -41,6 +41,7 @@ dependencies {
     utilImplementation(libs.guava)
     utilImplementation(libs.gson)
     utilImplementation(libs.fastutil)
+    utilImplementation(libs.z3)
     utilImplementation(libs.kotlin.stdlib.jdk8)
 
     testImplementation(libs.jmh.core)
